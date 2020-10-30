@@ -50,7 +50,7 @@
 	$num_templos = $_SESSION['edificios']['templos'];
 
 	//Comprobamos que botón de construcción se ha pulsado
-	if (isset($_POST['almacen_x'])) {
+	if (isset($_POST['almacen'])) {
 		//Construimos almacén
 		if ( ($madera >= 150) && ($marmol >= 25) && ($comida >= 100) ) {
 			//A construir
@@ -67,7 +67,7 @@
 		}
 	}
 	//Construimos templo
-	if (isset($_POST['templo_x'])) {
+	if (isset($_POST['templo'])) {
 		//Mirar si hay recursos
 		if ( ($madera >= 100) && ($marmol >= 50) && ($oro >= 50) ) {
 			//A construir
@@ -84,7 +84,7 @@
 		}
 	}
 	//Construimos cuartel
-	if (isset($_POST['cuartel_x'])) {
+	if (isset($_POST['cuartel'])) {
 		//Mirar si hay recursos
 		if ( ($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
 			//A construir
