@@ -1,6 +1,4 @@
-<?php 
-header("Refresh:5 url=juegaciam.php");
-session_start();
+<?php
 //CABECERA DE HTML
 include('cabecera.php');
 
@@ -18,22 +16,24 @@ if (isset($_SESSION["intervalo"])) {
 	$sessionTTL2 = time() - $_SESSION["intervalo"];
 	$num_decremento = $sessionTTL2 / 5;
 	$_SESSION['suministros']['oro'] -= round($num_decremento);
+	var_dump($num_decremento);
 	$_SESSION['suministros']['comida'] -= round($num_decremento * 2);
 	//Implementar el incremento de recursos
-	if(isset($_SESSION['suministros'])){
-		foreach($_SESSION['edificios']['huertos'] as $farm){
-			$_SESSION['suministros']['comida'] +=10;
+	foreach ($_SESSION['edificios'] as $key => $value) {
+		if($key="huertos"){
+			$_SESSION['suministros']['comida']+=$value*10;
 		}
-		foreach($_SESSION['edificios']['aserraderos'] as $sawmil){
-			$_SESSION['suministros']['madera'] +=10;
+		if($key="mercados"){
+			$_SESSION['suministros']['oro']+=$value*2;
 		}
-		foreach($_SESSION['edificios']['carteras'] as $mine){
-			$_SESSION['suministros']['marmol'] +=10;
+		if($key="aserraderos"){
+			$_SESSION['suministros']['madera']+=$value*10;
 		}
-		foreach($_SESSION['edificios']['mercado'] as $market){
-			$_SESSION['suministros']['oro'] +=2;
+		if($key="canteras"){
+			$_SESSION['suministros']['marmol']+=$value*10;
 		}
 	}
+
 }
 
 $_SESSION["intervalo"] = time();
@@ -53,10 +53,10 @@ if (!isset($_SESSION['suministros'])) {
 	$_SESSION['edificios'] = array();
 	$_SESSION['edificios']['cuarteles'] = 0;
 	$_SESSION['edificios']['templos'] = 0;
-	$_SESSION['edificios']['huertos']=0;
-	$_SESSION['edificios']['aserraderos']=0;
-	$_SESSION['edificios']['mercados']=0;
-	$_SESSION['edificios']['canteras']=0;;
+	$_SESSION['edificios']['huertos'] = 0;
+	$_SESSION['edificios']['aserraderos'] = 0;
+	$_SESSION['edificios']['mercados'] = 0;
+	$_SESSION['edificios']['canteras'] = 0;;
 }
 
 //Instancing session
@@ -66,10 +66,10 @@ $comida = $_SESSION['suministros']['comida'];
 $marmol = $_SESSION['suministros']['marmol'];
 $num_cuarteles = $_SESSION['edificios']['cuarteles'];
 $num_templos = $_SESSION['edificios']['templos'];
-$num_canteras=$_SESSION['edificios']['canteras'];
-$num_huertos=$_SESSION['edificios']['huertos'];
-$num_mercados=$_SESSION['edificios']['mercados'];
-$num_aserraderos=$_SESSION['edificios']['aserraderos'];
+$num_canteras = $_SESSION['edificios']['canteras'];
+$num_huertos = $_SESSION['edificios']['huertos'];
+$num_mercados = $_SESSION['edificios']['mercados'];
+$num_aserraderos = $_SESSION['edificios']['aserraderos'];
 //Comprobamos que botón de construcción se ha pulsado
 
 //Construimos templo
@@ -111,7 +111,7 @@ if (isset($_POST['cuartel_x'])) {
 //Construimos aserradero
 if (isset($_POST['aserradero_x'])) {
 	//Mirar si hay recursos
-	if (($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
+	if (($madera >= 200) && ($marmol >= 50)) {
 		//A construir
 		$_SESSION['edificios']['aserraderos']++;
 		$num_aserraderos++;
@@ -126,7 +126,7 @@ if (isset($_POST['aserradero_x'])) {
 //Construimos huerto
 if (isset($_POST['huerto_x'])) {
 	//Mirar si hay recursos
-	if (($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
+	if (($madera >= 50) && ($comida >= 200)) {
 		//A construir
 		$_SESSION['edificios']['huertos']++;
 		$num_huertos++;
@@ -141,7 +141,7 @@ if (isset($_POST['huerto_x'])) {
 //Construimos mercado
 if (isset($_POST['mercado_x'])) {
 	//Mirar si hay recursos
-	if (($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
+	if (($madera >= 50) && ($marmol >= 50) && ($oro >= 200)) {
 		//A construir
 		$_SESSION['edificios']['mercados']++;
 		$num_mercados++;
@@ -158,7 +158,7 @@ if (isset($_POST['mercado_x'])) {
 //Construimos cantera
 if (isset($_POST['cantera_x'])) {
 	//Mirar si hay recursos
-	if (($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
+	if (($madera >= 50) && ($marmol >= 200)) {
 		//A construir
 		$_SESSION['edificios']['canteras']++;
 		$num_canteras++;
@@ -185,7 +185,6 @@ if (isset($_POST['cantera_x'])) {
 
 	<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
-		<input type="image" src="imgs/crear_almacen.gif" name="almacen" value="almacen">
 		<input type="image" src="imgs/crear_templo.gif" name="templo" value="templo">
 		<input type="image" src="imgs/crear_cuartel.gif" name="cuartel" value="cuartel">
 		<input type="image" src="imgs/crear_aserradero.png" name="aserradero" value="aserradero">
