@@ -2,8 +2,6 @@
 //CABECERA DE HTML
 include('cabecera.php');
 
-//Please commit
-
 //Para cuando necesitéis borrar la sesión descomentáis esto y listo. Luego
 //se comenta otra vez
 //session_destroy(); 
@@ -12,26 +10,27 @@ include('cabecera.php');
 if (isset($_SESSION["intervalo"])) {
 	// Calcular el tiempo de vida de la sesión (TTL = Time To Live)
 	$sessionTTL2 = time() - $_SESSION["intervalo"];
-	$num_decremento = $sessionTTL2 / 5;
-	$_SESSION['suministros']['oro'] -= round($num_decremento);
-	var_dump($num_decremento);
-	$_SESSION['suministros']['comida'] -= round($num_decremento * 2);
+	$num = round($sessionTTL2 / 5);
+
+	//Implementar el decremento de oro y comida
+	$_SESSION['suministros']['oro'] -= $num;
+	$_SESSION['suministros']['comida'] -= $num * 2;
+
 	//Implementar el incremento de recursos
 	foreach ($_SESSION['edificios'] as $key => $value) {
-		if($key="huertos"){
-			$_SESSION['suministros']['comida']+=$value*10;
+		if ($key == "huertos") {
+			$_SESSION['suministros']['comida'] += ($value * 10) * $num;
 		}
-		if($key="mercados"){
-			$_SESSION['suministros']['oro']+=$value*2;
+		if ($key == "mercados") {
+			$_SESSION['suministros']['oro'] += ($value * 2) * $num;
 		}
-		if($key="aserraderos"){
-			$_SESSION['suministros']['madera']+=$value*10;
+		if ($key == "aserraderos") {
+			$_SESSION['suministros']['madera'] += ($value * 10) * $num;
 		}
-		if($key="canteras"){
-			$_SESSION['suministros']['marmol']+=$value*10;
+		if ($key == "canteras") {
+			$_SESSION['suministros']['marmol'] += ($value * 10) * $num;
 		}
 	}
-
 }
 
 $_SESSION["intervalo"] = time();
@@ -39,7 +38,7 @@ $_SESSION["intervalo"] = time();
 
 
 
-//Stock inicial 2000 de cada
+//Stock inicial 2000 de cada suministro
 if (!isset($_SESSION['suministros'])) {
 	//La primera vez, para crear la sesión
 	$_SESSION['suministros'] = array();
@@ -57,17 +56,12 @@ if (!isset($_SESSION['suministros'])) {
 	$_SESSION['edificios']['canteras'] = 0;;
 }
 
-//Instancing session
+//Asignamos los valores de suministros a variables
 $oro = $_SESSION['suministros']['oro'];
 $madera = $_SESSION['suministros']['madera'];
 $comida = $_SESSION['suministros']['comida'];
 $marmol = $_SESSION['suministros']['marmol'];
-$num_cuarteles = $_SESSION['edificios']['cuarteles'];
-$num_templos = $_SESSION['edificios']['templos'];
-$num_canteras = $_SESSION['edificios']['canteras'];
-$num_huertos = $_SESSION['edificios']['huertos'];
-$num_mercados = $_SESSION['edificios']['mercados'];
-$num_aserraderos = $_SESSION['edificios']['aserraderos'];
+
 //Comprobamos que botón de construcción se ha pulsado
 
 //Construimos templo
@@ -76,7 +70,6 @@ if (isset($_POST['templo_x'])) {
 	if (($madera >= 100) && ($marmol >= 50) && ($oro >= 50)) {
 		//A construir
 		$_SESSION['edificios']['templos']++;
-		$num_templos++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 100;
@@ -93,7 +86,6 @@ if (isset($_POST['cuartel_x'])) {
 	if (($madera >= 75) && ($marmol >= 25) && ($oro >= 20) && ($comida >= 50)) {
 		//A construir
 		$_SESSION['edificios']['cuarteles']++;
-		$num_cuarteles++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 75;
@@ -112,7 +104,6 @@ if (isset($_POST['aserradero_x'])) {
 	if (($madera >= 200) && ($marmol >= 50)) {
 		//A construir
 		$_SESSION['edificios']['aserraderos']++;
-		$num_aserraderos++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 200;
@@ -127,7 +118,6 @@ if (isset($_POST['huerto_x'])) {
 	if (($madera >= 50) && ($comida >= 200)) {
 		//A construir
 		$_SESSION['edificios']['huertos']++;
-		$num_huertos++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 50;
@@ -139,15 +129,14 @@ if (isset($_POST['huerto_x'])) {
 //Construimos mercado
 if (isset($_POST['mercado_x'])) {
 	//Mirar si hay recursos
-	if (($madera >= 50) && ($marmol >= 50) && ($oro >= 200)) {
+	if (($madera >= 50) && ($marmol >= 50) && ($oro >= 100)) {
 		//A construir
 		$_SESSION['edificios']['mercados']++;
-		$num_mercados++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 50;
 		$_SESSION['suministros']['marmol'] -= 50;
-		$_SESSION['suministros']['oro'] -= 200;
+		$_SESSION['suministros']['oro'] -= 100;
 		$madera = $_SESSION['suministros']['madera'];
 		$oro = $_SESSION['suministros']['oro'];
 		$marmol = $_SESSION['suministros']['marmol'];
@@ -159,7 +148,6 @@ if (isset($_POST['cantera_x'])) {
 	if (($madera >= 50) && ($marmol >= 200)) {
 		//A construir
 		$_SESSION['edificios']['canteras']++;
-		$num_canteras++;
 
 		//Decrementar stock
 		$_SESSION['suministros']['madera'] -= 50;
@@ -175,33 +163,32 @@ if (isset($_POST['cantera_x'])) {
 
 <section>
 
-	<h3 id="oro"><?php echo $oro; ?></h3>
-	<h3 id="madera"><?php echo $madera; ?></h3>
-	<h3 id="comida"><?php echo $comida; ?></h3>
-	<h3 id="marmol"><?php echo $marmol; ?></h3>
+	<h3 id="oro" title="Oro"><?php echo $oro; ?></h3>
+	<h3 id="madera" title="Madera"><?php echo $madera; ?></h3>
+	<h3 id="comida" title="Comida"><?php echo $comida; ?></h3>
+	<h3 id="marmol" title="Marmol"><?php echo $marmol; ?></h3>
 
 
 	<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
-		<input type="image" src="imgs/crear_templo.gif" name="templo" value="templo">
-		<input type="image" src="imgs/crear_cuartel.gif" name="cuartel" value="cuartel">
-		<input type="image" src="imgs/crear_aserradero.png" name="aserradero" value="aserradero">
-		<input type="image" src="imgs/crear_huerto.png" name="huerto" value="huerto">
-		<input type="image" src="imgs/crear_mercado.png" name="mercado" value="mercado">
-		<input type="image" src="imgs/crear_cantera.png" name="cantera" value="cantera">
-
+		<input type="image" src="imgs/crear_templo.gif" title="Templo" name="templo" value="templo">
+		<input type="image" src="imgs/crear_cuartel.gif" title="Cuartel" name="cuartel" value="cuartel">
+		<input type="image" src="imgs/crear_cantera.png" title="Cantera" name="cantera" value="cantera">
+		<input type="image" src="imgs/crear_aserradero.png" title="Aserradero" name="aserradero" value="aserradero">
+		<input type="image" src="imgs/crear_huerto.png" title="Huerto" name="huerto" value="huerto">
+		<input type="image" src="imgs/crear_mercado.png" title="Mercado" name="mercado" value="mercado">
 
 	</form>
 </section>
 
 <?php
 echo "<p>";
-echo "<span>Templos: $num_templos</span>&nbsp;&nbsp;&nbsp;";
-echo "<span>Cuarteles: $num_cuarteles</span>&nbsp;&nbsp;&nbsp;";
-echo "<span>Canteras: $num_canteras</span>&nbsp;&nbsp;&nbsp;";
-echo "<span>Asseraderos: $num_aserraderos</span>&nbsp;&nbsp;&nbsp;";
-echo "<span>Huertos: $num_huertos</span>&nbsp;&nbsp;&nbsp;";
-echo "<span>Mercados: $num_mercados</span>";
+echo "<span>Templos: " . $_SESSION['edificios']['templos'] . "</span>&nbsp;&nbsp;&nbsp;";
+echo "<span>Cuarteles: " . $_SESSION['edificios']['cuarteles'] . "</span>&nbsp;&nbsp;&nbsp;";
+echo "<span>Canteras: " . $_SESSION['edificios']['canteras'] . "</span>&nbsp;&nbsp;&nbsp;";
+echo "<span>Asseraderos: " . $_SESSION['edificios']['aserraderos'] . "</span>&nbsp;&nbsp;&nbsp;";
+echo "<span>Huertos: " . $_SESSION['edificios']['huertos'] . "</span>&nbsp;&nbsp;&nbsp;";
+echo "<span>Mercados: " . $_SESSION['edificios']['mercados'] . "</span>";
 
 echo "</p>";
 
