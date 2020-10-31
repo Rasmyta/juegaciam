@@ -1,4 +1,5 @@
 <?php
+
 //CABECERA DE HTML
 include('cabecera.php');
 
@@ -155,22 +156,20 @@ if (isset($_POST['cantera_x'])) {
 		$madera = $_SESSION['suministros']['madera'];
 		$marmol = $_SESSION['suministros']['marmol'];
 	}
-}
 
 ?>
 
 
 
 <section>
-
+  
 	<h3 id="oro" title="Oro"><?php echo $oro; ?></h3>
 	<h3 id="madera" title="Madera"><?php echo $madera; ?></h3>
 	<h3 id="comida" title="Comida"><?php echo $comida; ?></h3>
 	<h3 id="marmol" title="Marmol"><?php echo $marmol; ?></h3>
 
-
 	<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-
+    
 		<input type="image" src="imgs/crear_templo.gif" title="Templo" name="templo" value="templo">
 		<input type="image" src="imgs/crear_cuartel.gif" title="Cuartel" name="cuartel" value="cuartel">
 		<input type="image" src="imgs/crear_cantera.png" title="Cantera" name="cantera" value="cantera">
@@ -178,10 +177,12 @@ if (isset($_POST['cantera_x'])) {
 		<input type="image" src="imgs/crear_huerto.png" title="Huerto" name="huerto" value="huerto">
 		<input type="image" src="imgs/crear_mercado.png" title="Mercado" name="mercado" value="mercado">
 
+
 	</form>
 </section>
 
 <?php
+    
 echo "<p>";
 echo "<span>Templos: " . $_SESSION['edificios']['templos'] . "</span>&nbsp;&nbsp;&nbsp;";
 echo "<span>Cuarteles: " . $_SESSION['edificios']['cuarteles'] . "</span>&nbsp;&nbsp;&nbsp;";
@@ -192,11 +193,12 @@ echo "<span>Mercados: " . $_SESSION['edificios']['mercados'] . "</span>";
 
 echo "</p>";
 
+
 ?>
 
 
 
 <?php
-//PIE DE PÁGINA
-include('pie.php');
+	//PIE DE PÁGINA
+	include('pie.php');
 ?>
