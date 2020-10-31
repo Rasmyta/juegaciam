@@ -2,9 +2,7 @@
 //CABECERA DE HTML
 include('cabecera.php');
 
-//Templo = 100 madera, 50 piedra, 50 oro
-//Almacen = 150 madera, 25 piedra, 100 comida
-//Cuartel = 75 madera, 25 piedra, 50 comida, 20 oro
+//Please commit
 
 //Para cuando necesitéis borrar la sesión descomentáis esto y listo. Luego
 //se comenta otra vez
